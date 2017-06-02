@@ -16,6 +16,7 @@ model {
             debugLinkerArgs = ['/DEBUG']
             releaseCompilerArgs = ['/O2']
             crossCompile = false
+            skipTests = true
             compilerFamily = 'VisualCpp'
         }
         winX64(BuildConfig) {
@@ -25,6 +26,7 @@ model {
             debugLinkerArgs = ['/DEBUG']
             releaseCompilerArgs = ['/O2']
             crossCompile = false
+            skipTests = true
             compilerFamily = 'VisualCpp'
         }
         linuxX86(BuildConfig) {

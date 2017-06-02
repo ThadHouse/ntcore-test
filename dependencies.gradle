@@ -86,15 +86,18 @@ configurations.nativeDeps.files.each { file->
   jniTask.dependsOn(downloadTask)
 }
 
-ext.setupDependencies = { binary, project ->
+ext.setupDependencies = { binaries, project ->
+  binaries.all { binary ->
+  if (binary instanceof NativeBinarySpec) {
+    buildConfigs.findAll { (binary.targetPlatform.architecture.name == it.architecture
+                              && binary.targetPlatform.operatingSystem.name == it.operatingSystem) }.each 
+      { config->
+        deps.each {
+          def depName = it.split(':', 2)[1]
 
-  buildConfigs.findAll { (binary.targetPlatform.architecture.name == it.architecture
-                            && binary.targetPlatform.operatingSystem.name == it.operatingSystem) }.each { config->
-    deps.each {
-      def depName = it.split(':', 2)[1]
-
-      binary.lib(new WPILibDependencySet("$depLocation/${depName.toLowerCase()}", config, depName, project))
+          binary.lib(new WPILibDependencySet("$depLocation/${depName.toLowerCase()}", config, depName, project))
+        }
+      }
     }
-
   }
 }

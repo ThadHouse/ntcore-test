@@ -1,5 +1,6 @@
 import edu.wpi.first.nativeutils.NativeUtils
 import org.gradle.api.file.FileCollection
+import org.gradle.internal.os.OperatingSystem
 
     repositories {
         mavenLocal()
@@ -32,20 +33,28 @@ apply from: 'jni.gradle'
 
 apply from: 'dependencies.gradle'
 
+def platformSpecificIncludeFlag = { loc, cppCompiler ->
+    if (OperatingSystem.current().isWindows()) {
+        cppCompiler.args "/I$loc"
+    } else {
+        cppCompiler.args '-I', loc
+    }
+}
+
 model {
     components {
-        ntcore(NativeLibrarySpec) {
-            setupJniCompile(binaries, edu.wpi.first.nativeutils.NativeUtils.getBuildConfigs())
-            binaries.all {
-                setupDependencies(it, project)
-                //it.lib(new WPILibDependencySet(project))
-            }
-        }
+        ntcore(NativeLibrarySpec) { }
     }
     binaries {
+        setupJniCompile(it, edu.wpi.first.nativeutils.NativeUtils.getBuildConfigs())
+        setupDependencies(it, project)
+        withType(NativeBinarySpec) {
+            
+        }
         withType(GoogleTestTestSuiteBinarySpec) {
             lib project: ':gmock', library: 'gmock', linkage: 'static'
             lib library: 'ntcore', linkage: 'static'
+            platformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp", cppCompiler)
         }
     }
 }

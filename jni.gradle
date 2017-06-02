@@ -54,6 +54,7 @@ ext.setupJniCompile = { binaries, configs ->
         }
     }
     binaries.all { binary ->
+        if (binary instanceof NativeBinarySpec) {
         def isArm = configs.findAll { (binary.targetPlatform.architecture.name == it.architecture
                                        && binary.targetPlatform.operatingSystem.name == it.operatingSystem
                                        && it.crossCompile) }.size() > 0
@@ -91,5 +92,6 @@ ext.setupJniCompile = { binaries, configs ->
 
             dependsOn jniHeaders
         }
+    }
     }
 }
