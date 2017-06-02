@@ -1,0 +1,114 @@
+import edu.wpi.first.nativeutils.*
+
+def windowsCompilerArgs = ['/EHsc', '/DNOMINMAX', '/D_SCL_SECURE_NO_WARNINGS', '/D_WINSOCK_DEPRECATED_NO_WARNINGS', '/Zi', '/FS']
+def linuxCompilerArgs = ['-std=c++11', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                         '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-Wno-error=deprecated-declarations', '-pthread']
+def linuxLinkerArgs = ['-rdynamic', '-pthread']
+def rioCompilerArgs = ['-std=c++1y', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+                         '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-Wno-error=deprecated-declarations', '-pthread']
+
+model {
+    buildConfigs {
+        winX86(BuildConfig) {
+            architecture = 'x86'
+            operatingSystem = 'windows'
+            compilerArgs = windowsCompilerArgs
+            debugLinkerArgs = ['/DEBUG']
+            releaseCompilerArgs = ['/O2']
+            crossCompile = false
+            compilerFamily = 'VisualCpp'
+        }
+        winX64(BuildConfig) {
+            architecture = 'x86-64'
+            operatingSystem = 'windows'
+            compilerArgs = windowsCompilerArgs
+            debugLinkerArgs = ['/DEBUG']
+            releaseCompilerArgs = ['/O2']
+            crossCompile = false
+            compilerFamily = 'VisualCpp'
+        }
+        linuxX86(BuildConfig) {
+            architecture = 'x86'
+            operatingSystem = 'linux'
+            compilerArgs = linuxCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = false
+            compilerFamily = 'Gcc'
+        }
+        linuxX64(BuildConfig) {
+            architecture = 'x86-64'
+            operatingSystem = 'linux'
+            compilerArgs = linuxCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = false
+            compilerFamily = 'Gcc'
+        }
+        macX86(BuildConfig) {
+            architecture = 'x86'
+            operatingSystem = 'osx'
+            compilerArgs = ['-std=c++11', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g', '-m32',
+                            '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field']
+            linkerArgs = linuxLinkerArgs
+            crossCompile = false
+            compilerFamily = 'Clang'
+        }
+        macX64(BuildConfig) {
+            architecture = 'x86-64'
+            operatingSystem = 'osx'
+            compilerArgs = ['-std=c++11', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+                            '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field']
+            linkerArgs = linuxLinkerArgs
+            crossCompile = false
+            compilerFamily = 'Clang'
+        }
+        roboRio(BuildConfig) {
+            architecture = 'athena'
+            operatingSystem = 'linux'
+            toolChainPrefix = 'arm-frc-linux-gnueabi-'
+            compilerArgs = rioCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = true
+            compilerFamily = 'Gcc'
+            exclude << 'gmock'
+        }
+        raspbian(BuildConfig) {
+            architecture = 'raspbian'
+            operatingSystem = 'linux'
+            toolChainPrefix = 'arm-linux-gnueabi-'
+            compilerArgs = rioCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = true
+            compilerFamily = 'Gcc'
+            exclude << 'gmock'
+        }
+        armhf(BuildConfig) {
+            architecture = 'armhf'
+            operatingSystem = 'linux'
+            toolChainPrefix = 'arm-linux-gnueabi-'
+            compilerArgs = rioCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = true
+            compilerFamily = 'Gcc'
+            exclude << 'gmock'
+        }
+        armv8(BuildConfig) {
+            architecture = 'armv8'
+            operatingSystem = 'linux'
+            toolChainPrefix = 'aarch-linux-gnu-'
+            compilerArgs = rioCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = true
+            compilerFamily = 'Gcc'
+            exclude << 'gmock'
+        }
+        linuxArm(BuildConfig) {
+            architecture = 'arm'
+            operatingSystem = 'linux'
+            compilerArgs = rioCompilerArgs
+            linkerArgs = linuxLinkerArgs
+            crossCompile = false
+            isArm = true
+            compilerFamily = 'Gcc'
+        }
+    }
+}

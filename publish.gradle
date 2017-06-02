@@ -1,0 +1,52 @@
+apply plugin: 'maven-publish'
+
+def baseArtifactId = 'wpiutil'
+
+publishing {
+  publications {
+    cpp(MavenPublication) {
+      project.tasks.each { task ->
+        if (task.name.startsWith('zip') && !task.name.contains('jni')) {
+          artifact (task) {
+            if (task.name.contains('debug')) {
+              classifier = task.classifier + 'debug'
+            }
+          }
+        }
+      }
+
+      artifact cppHeadersZip
+      artifact cppSourcesZip
+
+      artifactId = baseArtifactId + '-cpp'
+      groupId 'edu.wpi.first.ntcore'
+      version '0.1-SNAPSHOT'
+    }
+
+    jni(MavenPublication) {
+      project.tasks.each { task ->
+        if (task.name.startsWith('zip') && task.name.contains('jni')) {
+          artifact (task) {
+            if (task.name.contains('debug')) {
+              classifier = task.classifier + 'debug'
+            }
+          }
+        }
+      }
+
+      artifactId = baseArtifactId + '-jni'
+      groupId 'edu.wpi.first.ntcore'
+      version '0.1-SNAPSHOT'
+    }
+
+    java(MavenPublication) {
+      artifact jar
+      artifact sourcesJar
+      artifact javadocJar
+
+      artifactId = baseArtifactId + '-java'
+      groupId 'edu.wpi.first.ntcore'
+      version '0.1-SNAPSHOT'
+    }
+  }
+}
