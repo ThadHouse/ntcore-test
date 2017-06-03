@@ -7,6 +7,8 @@ def linuxLinkerArgs = ['-rdynamic', '-pthread']
 def rioCompilerArgs = ['-std=c++1y', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
                          '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-Wno-error=deprecated-declarations', '-pthread']
 
+def deps = [ "edu.wpi.first.wpiutil:wpiutil" ]
+
 model {
     buildConfigs {
         winX86(BuildConfig) {
@@ -15,6 +17,7 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = ['/DEBUG']
             releaseCompilerArgs = ['/O2']
+            staticDeps = deps
             crossCompile = false
             skipTests = true
             compilerFamily = 'VisualCpp'
@@ -25,6 +28,7 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = ['/DEBUG']
             releaseCompilerArgs = ['/O2']
+            staticDeps = deps
             crossCompile = false
             skipTests = true
             compilerFamily = 'VisualCpp'
@@ -67,6 +71,7 @@ model {
             architecture = 'athena'
             operatingSystem = 'linux'
             toolChainPrefix = 'arm-frc-linux-gnueabi-'
+            staticDeps = deps
             compilerArgs = rioCompilerArgs
             linkerArgs = linuxLinkerArgs
             crossCompile = true
@@ -77,6 +82,7 @@ model {
             architecture = 'raspbian'
             operatingSystem = 'linux'
             toolChainPrefix = 'arm-linux-gnueabi-'
+            
             compilerArgs = rioCompilerArgs
             linkerArgs = linuxLinkerArgs
             crossCompile = true

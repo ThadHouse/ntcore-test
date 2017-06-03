@@ -2,9 +2,9 @@ import edu.wpi.first.nativeutils.NativeUtils
 import org.gradle.api.file.FileCollection
 import org.gradle.internal.os.OperatingSystem
 
-    repositories {
-        mavenLocal()
-    }
+repositories {
+    mavenLocal()
+}
 
 buildscript {
         repositories {
@@ -23,15 +23,9 @@ apply plugin: 'java'
 
 apply from: 'config.gradle'
 
-ext.deps = [
-    "edu.wpi.first.wpiutil:wpiutil"
-]
-
 ext.jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
 
 apply from: 'jni.gradle'
-
-apply from: 'dependencies.gradle'
 
 def platformSpecificIncludeFlag = { loc, cppCompiler ->
     if (OperatingSystem.current().isWindows()) {
@@ -47,7 +41,6 @@ model {
     }
     binaries {
         setupJniCompile(it, edu.wpi.first.nativeutils.NativeUtils.getBuildConfigs())
-        setupDependencies(it, project)
         withType(NativeBinarySpec) {
             
         }

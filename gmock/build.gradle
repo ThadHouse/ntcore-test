@@ -13,6 +13,8 @@ apply plugin: 'cpp'
 apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.native-utils'
 
+ext.gmockProject = true
+
 apply from: '../config.gradle'
 
 model {
