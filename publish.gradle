@@ -1,6 +1,32 @@
 apply plugin: 'maven-publish'
+apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
 
-def baseArtifactId = 'wpiutil'
+def getVersion = {
+    if (WPILibVersion.version.contains('-'))
+        return WPILibVersion.version.substring(WPILibVersion.version.indexOf('-'))
+    else
+        return ""
+}
+
+if (!hasProperty('releaseType')) {
+    WPILibVersion {
+        releaseType = 'dev'
+    }
+}
+
+def pubVersion
+if (project.hasProperty("publishVersion")) {
+    pubVersion = project.publishVersion
+} else {
+    pubVersion = WPILibVersion.version
+}
+
+if (pubVersion == null || pubVersion == "") {
+  pubVersion = "0.1.0-SNAPSHOT"
+}
+
+def baseArtifactId = 'ntcore'
+def artifactGroupId = 'edu.wpi.first.ntcore'
 
 publishing {
   publications {
@@ -19,8 +45,8 @@ publishing {
       artifact cppSourcesZip
 
       artifactId = baseArtifactId + '-cpp'
-      groupId 'edu.wpi.first.ntcore'
-      version '0.1-SNAPSHOT'
+      groupId artifactGroupId
+      version pubVersion
     }
 
     jni(MavenPublication) {
@@ -35,8 +61,8 @@ publishing {
       }
 
       artifactId = baseArtifactId + '-jni'
-      groupId 'edu.wpi.first.ntcore'
-      version '0.1-SNAPSHOT'
+      groupId artifactGroupId
+      version pubVersion
     }
 
     java(MavenPublication) {
@@ -45,8 +71,8 @@ publishing {
       artifact javadocJar
 
       artifactId = baseArtifactId + '-java'
-      groupId 'edu.wpi.first.ntcore'
-      version '0.1-SNAPSHOT'
+      groupId artifactGroupId
+      version pubVersion
     }
   }
 }
