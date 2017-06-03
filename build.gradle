@@ -21,19 +21,16 @@ apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.native-utils'
 apply plugin: 'java'
 
+dependencies {
+    compile 'edu.wpi.first.wpiutil:wpiutil-java:+'
+    runtime 'edu.wpi.first.wpiutil:wpiutil-java:+'
+}
+
 apply from: 'config.gradle'
 
 ext.jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
 
 apply from: 'jni.gradle'
-
-def platformSpecificIncludeFlag = { loc, cppCompiler ->
-    if (OperatingSystem.current().isWindows()) {
-        cppCompiler.args "/I$loc"
-    } else {
-        cppCompiler.args '-I', loc
-    }
-}
 
 model {
     components {
@@ -41,13 +38,10 @@ model {
     }
     binaries {
         setupJniCompile(it, edu.wpi.first.nativeutils.NativeUtils.getBuildConfigs())
-        withType(NativeBinarySpec) {
-            
-        }
         withType(GoogleTestTestSuiteBinarySpec) {
             lib project: ':gmock', library: 'gmock', linkage: 'static'
             lib library: 'ntcore', linkage: 'static'
-            platformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp", cppCompiler)
+            NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
         }
     }
 }
