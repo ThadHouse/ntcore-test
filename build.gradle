@@ -28,16 +28,20 @@ dependencies {
 
 apply from: 'config.gradle'
 
-ext.jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
+apply plugin: 'edu.wpi.first.jni-utils'
 
-apply from: 'jni.gradle'
+model {
+    jniConfig {
+        jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
+        jniArmHeaderLocation = file("${rootDir}/src/arm-linux-jni")
+    }
+}
 
 model {
     components {
         ntcore(NativeLibrarySpec) { }
     }
     binaries {
-        setupJniCompile(it, edu.wpi.first.nativeutils.NativeUtils.getBuildConfigs())
         withType(GoogleTestTestSuiteBinarySpec) {
             lib project: ':gmock', library: 'gmock', linkage: 'static'
             lib library: 'ntcore', linkage: 'static'

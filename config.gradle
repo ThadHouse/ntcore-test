@@ -93,6 +93,8 @@ model {
             toolChainPrefix = 'arm-frc-linux-gnueabi-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
+            debugCompilerArgs = linuxDebugCompilerArgs
+            releaseCompilerArgs = linuxReleaseCompilerArgs
             sharedDeps = deps
             crossCompile = true
             compilerFamily = 'Gcc'
@@ -104,6 +106,8 @@ model {
             toolChainPrefix = 'arm-linux-gnueabi-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
+            debugCompilerArgs = linuxDebugCompilerArgs
+            releaseCompilerArgs = linuxReleaseCompilerArgs
             staticDeps = deps
             crossCompile = true
             compilerFamily = 'Gcc'
@@ -115,6 +119,8 @@ model {
             toolChainPrefix = 'arm-linux-gnueabi-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
+            debugCompilerArgs = linuxDebugCompilerArgs
+            releaseCompilerArgs = linuxReleaseCompilerArgs
             crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
@@ -125,6 +131,8 @@ model {
             toolChainPrefix = 'aarch-linux-gnu-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
+            debugCompilerArgs = linuxDebugCompilerArgs
+            releaseCompilerArgs = linuxReleaseCompilerArgs
             staticDeps = deps
             crossCompile = true
             compilerFamily = 'Gcc'
@@ -135,6 +143,8 @@ model {
             operatingSystem = 'linux'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
+            debugCompilerArgs = linuxDebugCompilerArgs
+            releaseCompilerArgs = linuxReleaseCompilerArgs
             staticDeps = deps
             crossCompile = false
             isArm = true
