@@ -28,6 +28,7 @@ model {
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
             staticDeps = deps
+            defFile = "${rootDir}/ntcore.def"
             crossCompile = false
             compilerFamily = 'VisualCpp'
         }
@@ -38,6 +39,7 @@ model {
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
             staticDeps = deps
+            defFile = "${rootDir}/ntcore.def"
             crossCompile = false
             compilerFamily = 'VisualCpp'
         }
