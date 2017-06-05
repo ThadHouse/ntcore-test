@@ -39,6 +39,21 @@ model {
 }
 
 model {
+    dependencyConfigs {
+        wpiutil(DependencyConfig) {
+            groupId = 'edu.wpi.first.wpiutil'
+            artifactId = 'wpiutil-cpp'
+            headerClassifier = 'headers'
+            ext = 'zip'
+            version = '+'
+            sharedConfigs = [ ntcore: [ 'linux:athena' ] ]
+            staticConfigs = [ ntcore: [ 'windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
+                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
+        }
+    }
+}
+
+model {
     components {
         ntcore(NativeLibrarySpec) { }
     }

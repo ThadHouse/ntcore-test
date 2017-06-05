@@ -1,13 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
 
-def getVersion = {
-    if (WPILibVersion.version.contains('-'))
-        return WPILibVersion.version.substring(WPILibVersion.version.indexOf('-'))
-    else
-        return ""
-}
-
 if (!hasProperty('releaseType')) {
     WPILibVersion {
         releaseType = 'dev'
@@ -22,7 +15,7 @@ if (project.hasProperty("publishVersion")) {
 }
 
 if (pubVersion == null || pubVersion == "") {
-  pubVersion = "0.2.0-SNAPSHOT"
+  pubVersion = "424242-SNAPSHOT"
 }
 
 def baseArtifactId = 'ntcore'
@@ -33,14 +26,13 @@ model {
         cpp(PublishingConfig) {
             extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
             isNative = true
-            artifactId = 'ntcore-cpp'
+            artifactId = "${baseArtifactId}-cpp"
             groupId = artifactGroupId
             version = pubVersion
         }
         jni(PublishingConfig) {
-            extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
             isJni = true
-            artifactId = 'ntcore-ji'
+            artifactId = "${baseArtifactId}-jni"
             groupId = artifactGroupId
             version = pubVersion
         }
@@ -55,7 +47,7 @@ publishing {
       artifact sourcesJar
       artifact javadocJar
 
-      artifactId = baseArtifactId + '-java'
+      artifactId = "${baseArtifactId}-java"
       groupId artifactGroupId
       version pubVersion
     }

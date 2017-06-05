@@ -17,22 +17,6 @@ def macReleaseCompilerArgs = ['-O2']
 def macDebugCompilerArgs = ['-O0']
 def mac32BitArg = '-m32'
 
-
-model {
-    dependencyConfigs {
-        wpiutil(DependencyConfig) {
-            groupId = 'edu.wpi.first.wpiutil'
-            artifactId = 'wpiutil-cpp'
-            headerClassifier = 'headers'
-            ext = 'zip'
-            version = '+'
-            sharedConfigs = [ ntcore: [ 'linux:athena' ], ]
-            staticConfigs = [ ntcore: [ 'windows:x86', 'windows:x86-64' ] ]
-        }
-    }
-}
-
-
 model {
     buildConfigs {
         winX86(BuildConfig) {
