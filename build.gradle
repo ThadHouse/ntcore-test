@@ -19,6 +19,9 @@ apply plugin: 'cpp'
 apply plugin: 'google-test'
 apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.native-utils'
+apply plugin: 'edu.wpi.first.jni-utils'
+apply plugin: 'edu.wpi.first.dependency-utils'
+apply plugin: 'edu.wpi.first.publish-utils'
 apply plugin: 'java'
 
 dependencies {
@@ -27,8 +30,6 @@ dependencies {
 }
 
 apply from: 'config.gradle'
-
-apply plugin: 'edu.wpi.first.jni-utils'
 
 model {
     jniConfig {

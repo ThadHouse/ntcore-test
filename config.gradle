@@ -17,7 +17,21 @@ def macReleaseCompilerArgs = ['-O2']
 def macDebugCompilerArgs = ['-O0']
 def mac32BitArg = '-m32'
 
-def deps = [ 'edu.wpi.first.wpiutil:wpiutil' ]
+
+model {
+    dependencyConfigs {
+        wpiutil(DependencyConfig) {
+            groupId = 'edu.wpi.first.wpiutil'
+            artifactId = 'wpiutil-cpp'
+            headerClassifier = 'headers'
+            ext = 'zip'
+            version = '+'
+            sharedConfigs = [ ntcore: [ 'linux:athena' ], ]
+            staticConfigs = [ ntcore: [ 'windows:x86', 'windows:x86-64' ] ]
+        }
+    }
+}
+
 
 model {
     buildConfigs {
@@ -27,8 +41,6 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
-            staticDeps = deps
-            defFile = "${rootDir}/ntcore.def"
             crossCompile = false
             compilerFamily = 'VisualCpp'
         }
@@ -38,8 +50,6 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
-            staticDeps = deps
-            defFile = "${rootDir}/ntcore.def"
             crossCompile = false
             compilerFamily = 'VisualCpp'
         }
@@ -52,7 +62,6 @@ model {
             linkerArgs << linux32BitArg
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = false
             compilerFamily = 'Gcc'
         }
@@ -63,7 +72,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = false
             compilerFamily = 'Gcc'
         }
@@ -75,7 +83,6 @@ model {
             linkerArgs << mac32BitArg
             debugCompilerArgs = macDebugCompilerArgs
             releaseCompilerArgs = macReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = false
             compilerFamily = 'Clang'
         }
@@ -85,7 +92,6 @@ model {
             compilerArgs = macCompilerArgs
             debugCompilerArgs = macDebugCompilerArgs
             releaseCompilerArgs = macReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = false
             compilerFamily = 'Clang'
         }
@@ -97,7 +103,7 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            sharedDeps = deps
+            releaseStripBinaries = true
             crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
@@ -110,7 +116,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
@@ -135,7 +140,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
@@ -147,7 +151,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            staticDeps = deps
             crossCompile = false
             isArm = true
             compilerFamily = 'Gcc'

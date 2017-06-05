@@ -22,48 +22,33 @@ if (project.hasProperty("publishVersion")) {
 }
 
 if (pubVersion == null || pubVersion == "") {
-  pubVersion = "0.1.0-SNAPSHOT"
+  pubVersion = "0.2.0-SNAPSHOT"
 }
 
 def baseArtifactId = 'ntcore'
 def artifactGroupId = 'edu.wpi.first.ntcore'
 
+model {
+  publishingConfigs {
+        cpp(PublishingConfig) {
+            extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
+            isNative = true
+            artifactId = 'ntcore-cpp'
+            groupId = artifactGroupId
+            version = pubVersion
+        }
+        jni(PublishingConfig) {
+            extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
+            isJni = true
+            artifactId = 'ntcore-ji'
+            groupId = artifactGroupId
+            version = pubVersion
+        }
+    }
+}
+
 publishing {
   publications {
-    cpp(MavenPublication) {
-      project.tasks.each { task ->
-        if (task.name.startsWith('zip') && !task.name.contains('jni')) {
-          artifact (task) {
-            if (task.name.contains('debug')) {
-              classifier = task.classifier + 'debug'
-            }
-          }
-        }
-      }
-
-      artifact cppHeadersZip
-      artifact cppSourcesZip
-
-      artifactId = baseArtifactId + '-cpp'
-      groupId artifactGroupId
-      version pubVersion
-    }
-
-    jni(MavenPublication) {
-      project.tasks.each { task ->
-        if (task.name.startsWith('zip') && task.name.contains('jni')) {
-          artifact (task) {
-            if (task.name.contains('debug')) {
-              classifier = task.classifier + 'debug'
-            }
-          }
-        }
-      }
-
-      artifactId = baseArtifactId + '-jni'
-      groupId artifactGroupId
-      version pubVersion
-    }
 
     java(MavenPublication) {
       artifact jar
