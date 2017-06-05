@@ -55,7 +55,13 @@ model {
 
 model {
     components {
-        ntcore(NativeLibrarySpec) { }
+        ntcore(NativeLibrarySpec) { 
+            binaries.all {
+                if (it.targetPlatform.operatingSystem.name == 'windows') {
+                    linker.args "/DEF:${rootDir}/ntcore.def"
+                }
+            }
+        }
     }
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
