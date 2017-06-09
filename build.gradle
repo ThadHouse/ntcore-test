@@ -22,6 +22,7 @@ apply plugin: 'edu.wpi.first.native-utils'
 apply plugin: 'edu.wpi.first.jni-utils'
 apply plugin: 'edu.wpi.first.dependency-utils'
 apply plugin: 'edu.wpi.first.publish-utils'
+apply plugin: 'edu.wpi.first.exports-utils'
 apply plugin: 'java'
 
 dependencies {
@@ -39,6 +40,21 @@ model {
 }
 
 model {
+    exportsConfigs {
+        ntcore(ExportsConfig) { 
+            x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure', 
+                                  '_CT??_R0?AVbad_cast',
+                                  '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                  '_TI5?AVfailure' ]
+            x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure', 
+                                  '_CT??_R0?AVbad_cast', 
+                                  '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                  '_TI5?AVfailure' ]
+        }
+    }
+}
+
+model {
     dependencyConfigs {
         wpiutil(DependencyConfig) {
             groupId = 'edu.wpi.first.wpiutil'
@@ -46,8 +62,7 @@ model {
             headerClassifier = 'headers'
             ext = 'zip'
             version = '+'
-            sharedConfigs = [ ntcore: [ 'linux:athena' ] ]
-            staticConfigs = [ ntcore: [ 'windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
+            sharedConfigs = [ ntcore: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
                                         'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
         }
     }
@@ -66,7 +81,7 @@ model {
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
             lib project: ':gmock', library: 'gmock', linkage: 'static'
-            lib library: 'ntcore', linkage: 'static'
+            lib library: 'ntcore', linkage: 'shared'
             NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
         }
     }
