@@ -28,6 +28,9 @@ model {
                     cppCompiler.args '-Wall', '-Wshadow', '-fexceptions', '-Wextra', '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-pthread', '-fPIC'
                 }
             }
+            binaries.withType(SharedLibraryBinarySpec) {
+                buildable = false
+            }
         }
     }
 }

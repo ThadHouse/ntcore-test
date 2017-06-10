@@ -33,9 +33,18 @@ dependencies {
 apply from: 'config.gradle'
 
 model {
-    jniConfig {
-        jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
-        jniArmHeaderLocation = file("${rootDir}/src/arm-linux-jni")
+    jniConfigs {
+        ntcore(JNIConfig) {
+            jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
+            jniArmHeaderLocation = file("${rootDir}/src/arm-linux-jni")
+            sourceSets = [ project.sourceSets.main ]
+        }
+        ntcoreJNI(JNIConfig) {
+            jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
+            jniArmHeaderLocation = file("${rootDir}/src/arm-linux-jni")
+            sourceSets = [ project.sourceSets.main ]
+            createJar = true
+        }
     }
 }
 
@@ -64,6 +73,8 @@ model {
             version = '+'
             sharedConfigs = [ ntcore: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
                                         'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
+            staticConfigs = [ ntcoreJNI: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
+                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
         }
     }
 }
@@ -71,15 +82,28 @@ model {
 model {
     components {
         ntcore(NativeLibrarySpec) { 
-            binaries.all {
-                if (it.targetPlatform.operatingSystem.name == 'windows') {
-                    linker.args "/DEF:${rootDir}/ntcore.def"
+        }
+        ntcoreJNI(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs = ['src/ntcore/cpp']
+                        includes = ['**/*.cpp']
+                    }
+                    exportedHeaders {
+                        srcDirs = ['src/ntcore/headers']
+                        includes = ['**/*.h']
+                    }
                 }
             }
         }
     }
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
+            println it.component.name
+            if (it.component.name == 'ntcoreJNITest') {
+                it.buildable = false
+            }
             lib project: ':gmock', library: 'gmock', linkage: 'static'
             lib library: 'ntcore', linkage: 'shared'
             NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
