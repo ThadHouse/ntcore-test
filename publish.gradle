@@ -25,12 +25,14 @@ model {
   publishingConfigs {
         cpp(PublishingConfig) {
             extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
+            includeComponents = [ 'ntcore' ]
             isNative = true
             artifactId = "${baseArtifactId}-cpp"
             groupId = artifactGroupId
             version = pubVersion
         }
         jni(PublishingConfig) {
+            includeComponents = [ 'ntcoreJNI' ]
             isJni = true
             artifactId = "${baseArtifactId}-jni"
             groupId = artifactGroupId

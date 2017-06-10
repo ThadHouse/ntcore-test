@@ -43,20 +43,19 @@ model {
             jniDefinitionClasses = [ "edu.wpi.first.wpilibj.networktables.NetworkTablesJNI" ]
             jniArmHeaderLocation = file("${rootDir}/src/arm-linux-jni")
             sourceSets = [ project.sourceSets.main ]
-            createJar = true
         }
     }
 }
 
 model {
     exportsConfigs {
-        ntcore(ExportsConfig) { 
-            x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure', 
+        ntcore(ExportsConfig) {
+            x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
                                   '_CT??_R0?AVbad_cast',
                                   '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
                                   '_TI5?AVfailure' ]
-            x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure', 
-                                  '_CT??_R0?AVbad_cast', 
+            x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                                  '_CT??_R0?AVbad_cast',
                                   '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
                                   '_TI5?AVfailure' ]
         }
@@ -81,9 +80,14 @@ model {
 
 model {
     components {
-        ntcore(NativeLibrarySpec) { 
+        ntcore(NativeLibrarySpec) {
         }
         ntcoreJNI(NativeLibrarySpec) {
+            binaries.all {
+                if (it.targetPlatform.operatingSystem.name == 'windows') {
+                    linker.args "/DEF:${rootDir}/ntcore.def"
+                }
+            }
             sources {
                 cpp {
                     source {
@@ -99,8 +103,12 @@ model {
         }
     }
     binaries {
+        withType(StaticLibraryBinarySpec) {
+            if (it.component.name == 'ntcoreJNI') {
+                it.buildable = false
+            }
+        }
         withType(GoogleTestTestSuiteBinarySpec) {
-            println it.component.name
             if (it.component.name == 'ntcoreJNITest') {
                 it.buildable = false
             }
