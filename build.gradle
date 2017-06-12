@@ -155,3 +155,7 @@ artifacts {
 }
 
 apply from: 'publish.gradle'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}

@@ -47,7 +47,6 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'VisualCpp'
             detectPlatform = windowsPlatformDetect
         }
@@ -57,7 +56,6 @@ model {
             compilerArgs = windowsCompilerArgs
             debugLinkerArgs = windowsDebugLinkerArgs
             releaseCompilerArgs = windowsReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'VisualCpp'
             detectPlatform = windowsPlatformDetect
         }
@@ -70,9 +68,9 @@ model {
             linkerArgs << linux32BitArg
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'Gcc'
             detectPlatform = linuxIntelPlatformDetect
+            skipTests = true
         }
         linuxX64(BuildConfig) {
             architecture = 'x86-64'
@@ -81,7 +79,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'Gcc'
             detectPlatform = linuxIntelPlatformDetect
         }
@@ -93,7 +90,6 @@ model {
             linkerArgs << mac32BitArg
             debugCompilerArgs = macDebugCompilerArgs
             releaseCompilerArgs = macReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'Clang'
             detectPlatform = macPlatformDetect
         }
@@ -103,11 +99,10 @@ model {
             compilerArgs = macCompilerArgs
             debugCompilerArgs = macDebugCompilerArgs
             releaseCompilerArgs = macReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'Clang'
             detectPlatform = macPlatformDetect
         }
-        roboRio(BuildConfig) {
+        roboRio(CrossBuildConfig) {
             architecture = 'athena'
             operatingSystem = 'linux'
             toolChainPrefix = 'arm-frc-linux-gnueabi-'
@@ -116,43 +111,39 @@ model {
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
             releaseStripBinaries = true
-            crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
         }
-        raspbian(BuildConfig) {
+        raspbian(CrossBuildConfig) {
             architecture = 'raspbian'
             operatingSystem = 'linux'
-            toolChainPrefix = 'arm-linux-gnueabi-'
+            toolChainPrefix = 'arm-linux-gnueabihf-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
         }
-        armhf(BuildConfig) {
+        armhf(CrossBuildConfig) {
             architecture = 'armhf'
             operatingSystem = 'linux'
-            toolChainPrefix = 'arm-linux-gnueabi-'
+            toolChainPrefix = 'arm-linux-gnueabihf-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
         }
-        armv8(BuildConfig) {
-            architecture = 'armv8'
+        aarch(CrossBuildConfig) {
+            architecture = 'aarch'
             operatingSystem = 'linux'
             toolChainPrefix = 'aarch-linux-gnu-'
             compilerArgs = linuxCompilerArgs
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = true
             compilerFamily = 'Gcc'
             exclude << 'gmock'
         }
@@ -163,7 +154,6 @@ model {
             linkerArgs = linuxLinkerArgs
             debugCompilerArgs = linuxDebugCompilerArgs
             releaseCompilerArgs = linuxReleaseCompilerArgs
-            crossCompile = false
             compilerFamily = 'Gcc'
             detectPlatform = linuxArmPlatformDetect
         }
