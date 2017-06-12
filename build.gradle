@@ -71,6 +71,8 @@ model {
             ext = 'zip'
             version = '+'
             sharedConfigs = [ ntcore: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
+                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ],
+                              ntcoreExe: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
                                         'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
             staticConfigs = [ ntcoreJNI: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
                                         'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
@@ -101,6 +103,15 @@ model {
                 }
             }
         }
+        if (!project.hasProperty('skipTestExe')) {
+            ntcoreExe(NativeExecutableSpec) {
+                sources {
+                    cpp {
+                        lib library: "ntcore"
+                    }
+                }
+            }
+        }
     }
     binaries {
         withType(StaticLibraryBinarySpec) {
@@ -109,7 +120,7 @@ model {
             }
         }
         withType(GoogleTestTestSuiteBinarySpec) {
-            if (it.component.name == 'ntcoreJNITest') {
+            if (it.component.name == 'ntcoreJNITest' || it.component.name == 'ntcoreExeTest') {
                 it.buildable = false
             }
             lib project: ':gmock', library: 'gmock', linkage: 'static'
