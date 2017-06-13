@@ -70,12 +70,9 @@ model {
             headerClassifier = 'headers'
             ext = 'zip'
             version = '+'
-            sharedConfigs = [ ntcore: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
-                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ],
-                              ntcoreExe: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
-                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
-            staticConfigs = [ ntcoreJNI: [ 'linux:athena','windows:x86', 'windows:x86-64', 'linux:x86', 'linux:x86-64', 'osx:x86', 'osx:x86-64',
-                                        'linux:raspbian', 'linux:armhf', 'linux:armv8', 'linux:arm' ] ]
+            sharedConfigs = [ ntcore: [],
+                              ntcoreExe: [] ]
+            staticConfigs = [ ntcoreJNI: [] ]
         }
     }
 }
