@@ -59,6 +59,26 @@ model {
                                   '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
                                   '_TI5?AVfailure' ]
         }
+        ntcoreJNI(ExportsConfig) {
+            x86SymbolFilter = { symbols->
+                def retList = []
+                symbols.each { symbol->
+                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_')) {
+                        retList << symbol
+                    }
+                }
+                return retList
+            }
+            x64SymbolFilter = { symbols->
+                def retList = []
+                symbols.each { symbol->
+                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_')) {
+                        retList << symbol
+                    }
+                }
+                return retList
+            }
+        }
     }
 }
 
@@ -83,11 +103,6 @@ model {
         }
         ntcoreJNI(NativeLibrarySpec) {
             baseName = 'ntcore'
-            binaries.all {
-                if (it.targetPlatform.operatingSystem.name == 'windows') {
-                    linker.args "/DEF:${rootDir}/ntcore.def"
-                }
-            }
             sources {
                 cpp {
                     source {
