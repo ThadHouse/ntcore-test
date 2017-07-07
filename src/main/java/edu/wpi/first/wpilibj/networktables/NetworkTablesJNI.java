@@ -18,7 +18,7 @@ public class NetworkTablesJNI {
         System.loadLibrary("ntcore");
       } catch (UnsatisfiedLinkError e) {
         try {
-          String resname = RuntimeDetector.getLibraryResource("ntcoreJNI");
+          String resname = RuntimeDetector.getLibraryResource("ntcore");
           InputStream is = NetworkTablesJNI.class.getResourceAsStream(resname);
           if (is != null) {
             // create temporary file

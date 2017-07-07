@@ -15,6 +15,11 @@ buildscript {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+
 apply plugin: 'cpp'
 apply plugin: 'google-test'
 apply plugin: 'visual-studio'
@@ -25,12 +30,34 @@ apply plugin: 'edu.wpi.first.publish-utils'
 apply plugin: 'edu.wpi.first.exports-utils'
 apply plugin: 'java'
 
+apply from: 'config.gradle'
+
+task nativeTestFilesJar(type: Jar) {
+    destinationDir = project.buildDir
+    classifier = "nativeTestFiles"
+
+    project.model {
+        binaries {
+            withType(SharedLibraryBinarySpec) { binary ->
+                if (binary.component.name == 'ntcoreJNI') {
+                    from(binary.sharedLibraryFile) {
+                        into NativeUtils.getPlatformPath(binary)
+                    }
+                }
+            }
+        }
+    }
+}
+
+test.dependsOn nativeTestFilesJar
+
 dependencies {
     compile 'edu.wpi.first.wpiutil:wpiutil-java:+'
     runtime 'edu.wpi.first.wpiutil:wpiutil-java:+'
+    testCompile 'junit:junit:4.12'
+    testRuntime files(project(':').nativeTestFilesJar.archivePath)
 }
 
-apply from: 'config.gradle'
 
 model {
     jniConfigs {
@@ -91,7 +118,8 @@ model {
             ext = 'zip'
             version = '+'
             sharedConfigs = [ ntcore: [],
-                              ntcoreExe: [] ]
+                              ntcoreExe: [],
+                              ntcoreTest: [] ]
             staticConfigs = [ ntcoreJNI: [] ]
         }
     }
