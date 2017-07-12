@@ -19,7 +19,6 @@ repositories {
     mavenCentral()
 }
 
-
 apply plugin: 'cpp'
 apply plugin: 'google-test'
 apply plugin: 'visual-studio'
@@ -128,23 +127,32 @@ model {
 model {
     components {
         ntcore(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/main/native/cpp'
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/native/include'
+                    }
+                }
+            }
         }
         ntcoreJNI(NativeLibrarySpec) {
             baseName = 'ntcore'
             sources {
                 cpp {
                     source {
-                        srcDirs = ['src/ntcore/cpp']
-                        includes = ['**/*.cpp']
+                        srcDirs 'src/main/native/cpp'
+                        include '**/*.cpp'
                     }
                     exportedHeaders {
-                        srcDirs = ['src/ntcore/headers']
-                        includes = ['**/*.h']
+                        srcDirs 'src/main/native/include'
                     }
                 }
             }
         }
-        ntcoreTestingBase(NativeLibrarySpec) { }
         if (!project.hasProperty('skipTestExe')) {
             ntcoreExe(NativeExecutableSpec) {
                 sources {
@@ -152,6 +160,15 @@ model {
                         lib library: "ntcore"
                     }
                 }
+            }
+        }
+        ntcoreTestingBase(NativeLibrarySpec) { }
+    }
+    testSuites {
+        ntcoreTestingBaseTest {
+            sources {
+                cpp.source.srcDir '/src/test/native/cpp'
+                cpp.exportedHeaders.srcDir '/src/test/native/include'
             }
         }
     }
@@ -165,7 +182,7 @@ model {
             if (it.component.testedComponent.name.contains('TestingBase')) {
                 lib project: ':gmock', library: 'gmock', linkage: 'static'
                 lib library: 'ntcore', linkage: 'shared'
-                NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
+                NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/main/native/cpp".toString(), cppCompiler)
             } else {
                 it.buildable = false
             }
@@ -177,7 +194,7 @@ task cppSourcesZip(type: Zip) {
     destinationDir = project.buildDir
     classifier = "sources"
 
-    from('src/ntcore/cpp') {
+    from('src/main/native/cpp') {
         into '/'
     }
 }
@@ -186,11 +203,10 @@ task cppHeadersZip(type: Zip) {
     destinationDir = project.buildDir
     classifier = "headers"
 
-    from('src/ntcore/headers') {
+    from('src/main/native/include') {
         into '/'
     }
 }
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
