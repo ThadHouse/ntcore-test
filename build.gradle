@@ -90,7 +90,7 @@ model {
             x86SymbolFilter = { symbols->
                 def retList = []
                 symbols.each { symbol->
-                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_')) {
+                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
                         retList << symbol
                     }
                 }
@@ -99,7 +99,7 @@ model {
             x64SymbolFilter = { symbols->
                 def retList = []
                 symbols.each { symbol->
-                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_')) {
+                    if (symbol.startsWith('NT_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
                         retList << symbol
                     }
                 }
@@ -119,7 +119,7 @@ model {
             version = '+'
             sharedConfigs = [ ntcore: [],
                               ntcoreExe: [],
-                              ntcoreTest: [] ]
+                              ntcoreTestingBaseTest: [] ]
             staticConfigs = [ ntcoreJNI: [] ]
         }
     }
@@ -144,6 +144,7 @@ model {
                 }
             }
         }
+        ntcoreTestingBase(NativeLibrarySpec) { }
         if (!project.hasProperty('skipTestExe')) {
             ntcoreExe(NativeExecutableSpec) {
                 sources {
@@ -161,12 +162,13 @@ model {
             }
         }
         withType(GoogleTestTestSuiteBinarySpec) {
-            if (it.component.name == 'ntcoreJNITest' || it.component.name == 'ntcoreExeTest') {
+            if (it.component.testedComponent.name.contains('TestingBase')) {
+                lib project: ':gmock', library: 'gmock', linkage: 'static'
+                lib library: 'ntcore', linkage: 'shared'
+                NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
+            } else {
                 it.buildable = false
             }
-            lib project: ':gmock', library: 'gmock', linkage: 'static'
-            lib library: 'ntcore', linkage: 'shared'
-            NativeUtils.setPlatformSpecificIncludeFlag("${rootDir}/src/ntcore/cpp".toString(), cppCompiler)
         }
     }
 }
