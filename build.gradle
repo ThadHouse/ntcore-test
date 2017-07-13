@@ -197,6 +197,18 @@ task cppSourcesZip(type: Zip) {
     from('src/main/native/cpp') {
         into '/'
     }
+    model {
+        tasks {
+            it.each {
+                if (it.name.contains('jniHeaders')) {
+                    from (it.outputs.files) {
+                        into '/'
+                    }
+                    dependsOn it
+                }
+            }
+        }
+    }
 }
 
 task cppHeadersZip(type: Zip) {
