@@ -19,13 +19,20 @@ repositories {
     mavenCentral()
 }
 
+ext.getClassifier = { binary->
+    return NativeUtils.getClassifier(binary)
+}
+
+ext.getPlatformPath = { binary->
+    return NativeUtils.getPlatformPath(binary)
+}
+
 apply plugin: 'cpp'
 apply plugin: 'google-test'
 apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.native-utils'
 apply plugin: 'edu.wpi.first.jni-utils'
 apply plugin: 'edu.wpi.first.dependency-utils'
-apply plugin: 'edu.wpi.first.publish-utils'
 apply plugin: 'edu.wpi.first.exports-utils'
 apply plugin: 'java'
 
@@ -71,9 +78,6 @@ model {
             sourceSets = [ project.sourceSets.main ]
         }
     }
-}
-
-model {
     exportsConfigs {
         ntcore(ExportsConfig) {
             x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
@@ -106,9 +110,6 @@ model {
             }
         }
     }
-}
-
-model {
     dependencyConfigs {
         wpiutil(DependencyConfig) {
             groupId = 'edu.wpi.first.wpiutil'
@@ -122,9 +123,6 @@ model {
             staticConfigs = [ ntcoreJNI: [] ]
         }
     }
-}
-
-model {
     components {
         ntcore(NativeLibrarySpec) {
             sources {
@@ -190,53 +188,8 @@ model {
     }
 }
 
-task cppSourcesZip(type: Zip) {
-    destinationDir = project.buildDir
-    classifier = "sources"
-
-    from('src/main/native/cpp') {
-        into '/'
-    }
-    model {
-        tasks {
-            it.each {
-                if (it.name.contains('jniHeaders')) {
-                    from (it.outputs.files) {
-                        into '/'
-                    }
-                    dependsOn it
-                }
-            }
-        }
-    }
-}
-
-task cppHeadersZip(type: Zip) {
-    destinationDir = project.buildDir
-    classifier = "headers"
-
-    from('src/main/native/include') {
-        into '/'
-    }
-}
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives cppHeadersZip
-    archives cppSourcesZip
-}
-
 apply from: 'publish.gradle'
+apply from: 'zips.gradle'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.1'

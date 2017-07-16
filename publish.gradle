@@ -7,7 +7,7 @@ if (!hasProperty('releaseType')) {
     }
 }
 
-def pubVersion
+ext.pubVersion = ''
 if (project.hasProperty("publishVersion")) {
     pubVersion = project.publishVersion
 } else {
@@ -18,40 +18,40 @@ if (pubVersion == null || pubVersion == "") {
   pubVersion = "424242-SNAPSHOT"
 }
 
-def baseArtifactId = 'ntcore'
-def artifactGroupId = 'edu.wpi.first.ntcore'
-
-model {
-  publishingConfigs {
-        cpp(PublishingConfig) {
-            extraPublishingTasks = [ cppHeadersZip, cppSourcesZip ]
-            includeComponents = [ 'ntcore' ]
-            isNative = true
-            artifactId = "${baseArtifactId}-cpp"
-            groupId = artifactGroupId
-            version = pubVersion
-        }
-        jni(PublishingConfig) {
-            includeComponents = [ 'ntcoreJNI' ]
-            isJni = true
-            artifactId = "${baseArtifactId}-jni"
-            groupId = artifactGroupId
-            version = pubVersion
-        }
-    }
-}
+ext.baseArtifactId = 'ntcore'
+ext.artifactGroupId = 'edu.wpi.first.ntcore'
 
 publishing {
-  publications {
+    publications {
+        java(MavenPublication) {
+            from components.java
+            
+            artifact sourcesJar
+            artifact javadocJar
 
-    java(MavenPublication) {
-      artifact jar
-      artifact sourcesJar
-      artifact javadocJar
+            artifactId = "${baseArtifactId}-java"
+            groupId artifactGroupId
+            version pubVersion
 
-      artifactId = "${baseArtifactId}-java"
-      groupId artifactGroupId
-      version pubVersion
+            // From 
+            // https://stackoverflow.com/a/32353697/5684133
+            pom.withXml {
+                // Generate map of resolved versions
+                Map resolvedVersionMap = [:]
+                Set<ResolvedArtifact> resolvedArtifacts = configurations.compile.getResolvedConfiguration().getResolvedArtifacts()
+                resolvedArtifacts.addAll(configurations.testCompile.getResolvedConfiguration().getResolvedArtifacts())
+                resolvedArtifacts.each {
+                    ModuleVersionIdentifier mvi = it.getModuleVersion().getId();
+                    resolvedVersionMap.put("${mvi.getGroup()}:${mvi.getName()}", mvi.getVersion())
+                }
+
+                // Update dependencies with resolved versions
+                asNode().dependencies.first().each {
+                    def groupId = it.get("groupId").first().value().first()
+                    def artifactId = it.get("artifactId").first().value().first()
+                    it.get("version").first().value = resolvedVersionMap.get("${groupId}:${artifactId}")
+                }
+            }
+        }
     }
-  }
 }
